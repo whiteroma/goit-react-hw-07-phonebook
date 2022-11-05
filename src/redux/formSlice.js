@@ -5,7 +5,14 @@ import storage from 'redux-persist/lib/storage';
 
 const formSlice = createSlice({
   name: 'contacts',
-  initialState: { items: [], query: '' },
+  initialState: {
+    contacts: [
+      items: [],
+      isLoading: false,
+      error: null
+    ],
+    filter: ""
+  },
   reducers: {
     addContact(state, action) {
       state.items.push({
