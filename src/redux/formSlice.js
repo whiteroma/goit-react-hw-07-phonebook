@@ -6,29 +6,29 @@ import storage from 'redux-persist/lib/storage';
 const formSlice = createSlice({
   name: 'contacts',
   initialState: {
-    contacts: [
+    contacts: {
       items: [],
       isLoading: false,
-      error: null
-    ],
-    filter: ""
+      error: null,
+    },
+    filter: '',
   },
   reducers: {
     addContact(state, action) {
-      state.items.push({
+      state.contacts.items.push({
         id: nanoid(),
         name: action.payload.name,
         number: action.payload.number,
       });
     },
     deleteContact(state, action) {
-      state.items = state.items.filter(
+      state.contacts.items = state.contacts.items.filter(
         contact => contact.id !== action.payload
       );
     },
 
     filterContacts(state, action) {
-      state.query = action.payload;
+      state.filter = action.payload;
     },
   },
 });
@@ -36,7 +36,7 @@ const formSlice = createSlice({
 const persistConfig = {
   key: 'root',
   storage,
-  blacklist: ['query'],
+  blacklist: ['filter'],
 };
 
 export const persistedReducer = persistReducer(
