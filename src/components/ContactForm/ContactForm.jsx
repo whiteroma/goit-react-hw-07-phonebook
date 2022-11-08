@@ -1,4 +1,4 @@
-import React from 'react';
+import { React } from 'react';
 import { FormContainer } from './ContactForm.styled';
 import { Formik, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -19,7 +19,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const ContactForm = () => {
-  const [addContact, { isLoading, isSuccess }] = useAddContactMutation();
+  const [addContact, { isLoading }] = useAddContactMutation();
   const { data } = useFetchContactsQuery();
 
   const handleSubmit = (values, { resetForm }) => {
@@ -30,11 +30,10 @@ const ContactForm = () => {
       return toast.error(`${values.name} is already in a list`);
     } else {
       addContact({ ...values });
-      resetForm();
       toast.success(`${values.name} successfully added`);
+      resetForm();
     }
   };
-  console.log("isSuccess", isSuccess);
 
   return (
     <Formik
