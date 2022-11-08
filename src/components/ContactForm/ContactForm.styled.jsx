@@ -3,7 +3,7 @@ import { Form } from 'formik';
 
 export const FormContainer = styled(Form)`
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: center;
   flex-direction: column;
   gap: 10px;
@@ -29,4 +29,5 @@ export const FormContainer = styled(Form)`
     font-size: 20px;
     border-radius: 6px;
   }
+
 `;

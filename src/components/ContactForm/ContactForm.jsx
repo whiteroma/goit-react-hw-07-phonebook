@@ -1,9 +1,13 @@
-import { nanoid } from 'nanoid';
 import React from 'react';
 import { FormContainer } from './ContactForm.styled';
 import { Formik, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { useAddContactMutation, useFetchContactsQuery } from 'ContactsApi/contactsApi';
+import {
+  useAddContactMutation,
+  useFetchContactsQuery,
+} from 'ContactsApi/contactsApi';
+import { Oval } from 'react-loader-spinner';
+import { toast } from 'react-toastify';
 
 const initialValues = {
   name: '',
@@ -15,7 +19,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const ContactForm = () => {
-  const [addContact] = useAddContactMutation()
+  const [addContact, { isLoading, isSuccess }] = useAddContactMutation();
   const { data } = useFetchContactsQuery();
 
   const handleSubmit = (values, { resetForm }) => {
@@ -23,12 +27,14 @@ const ContactForm = () => {
       .map(contact => contact.name.toLowerCase())
       .includes(values.name.toLowerCase());
     if (addedName) {
-      alert(`${values.name} is already in a list`);
+      return toast.error(`${values.name} is already in a list`);
     } else {
-      addContact({...values});
+      addContact({ ...values });
       resetForm();
+      toast.success(`${values.name} successfully added`);
     }
   };
+  console.log("isSuccess", isSuccess);
 
   return (
     <Formik
@@ -59,7 +65,22 @@ const ContactForm = () => {
           />
           <ErrorMessage name="phone" />
         </label>
-        <button type="submit">Add contact</button>
+        {isLoading ? (
+          <Oval
+            height={40}
+            width={40}
+            color="blue"
+            wrapperStyle={{}}
+            wrapperClass=""
+            visible={true}
+            ariaLabel="oval-loading"
+            secondaryColor="blue"
+            strokeWidth={2}
+            strokeWidthSecondary={2}
+          />
+        ) : (
+          <button type="submit">Add contact</button>
+        )}
       </FormContainer>
     </Formik>
   );
