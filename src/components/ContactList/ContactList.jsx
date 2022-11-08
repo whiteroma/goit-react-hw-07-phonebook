@@ -1,27 +1,32 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { List, ListItem, ListSpan } from './ContactList.styled';
-import { deleteContact } from 'redux/formSlice';
+// import { addContact, deleteContact } from 'redux/formSlice';
+import { useFetchContactsQuery, useDeleteContactMutation } from 'ContactsApi/contactsApi';
 
 export default function ContactList() {
-  const dispatch = useDispatch();
-  const contacts = useSelector(state => state.contacts.contacts.items);
   const filter = useSelector(state => state.contacts.filter);
-  const items = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.toLowerCase())
-  );
+  const { data } = useFetchContactsQuery();
+  const [deleteContact] = useDeleteContactMutation()
+  
+  // const items = data.filter(contact =>
+  //   contact.name.toLowerCase().includes(filter.toLowerCase())
+  // );
 
-  const deleteButton = contactId => {
-    dispatch(deleteContact(contactId));
-  };
+  console.log("data", data);
+//  console.log("items", items);
+
+  // const deleteButton = contactId => {
+  //   deleteContact(contactId);
+  // };
 
   return (
     <List>
-      {items.map(({ name, number, id }) => (
+      {data && data.map(({ name, phone, id }) => (
         <ListItem key={id}>
           {name}
           <ListSpan>:</ListSpan>
-          {number}
-          <button onClick={() => deleteButton(id)}>Delete</button>
+          {phone}
+          <button onClick={() => deleteContact(id)}>Delete</button>
         </ListItem>
       ))}
     </List>

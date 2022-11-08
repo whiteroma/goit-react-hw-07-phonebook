@@ -3,32 +3,29 @@ import React from 'react';
 import { FormContainer } from './ContactForm.styled';
 import { Formik, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from 'redux/formSlice';
+import { useAddContactMutation, useFetchContactsQuery } from 'ContactsApi/contactsApi';
 
 const initialValues = {
   name: '',
-  number: '',
+  phone: '',
 };
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('Please enter a name'),
-  number: Yup.string().required('Please enter a number'),
+  phone: Yup.string().required('Please enter a number'),
 });
 
 const ContactForm = () => {
-  const dispatch = useDispatch();
-  const contacts = useSelector(state => state.contacts.contacts.items);
-  const nameId = nanoid();
-  const numberId = nanoid();
+  const [addContact] = useAddContactMutation()
+  const { data } = useFetchContactsQuery();
 
   const handleSubmit = (values, { resetForm }) => {
-    const addedName = contacts
+    const addedName = data
       .map(contact => contact.name.toLowerCase())
       .includes(values.name.toLowerCase());
     if (addedName) {
       alert(`${values.name} is already in a list`);
     } else {
-      dispatch(addContact(values));
+      addContact({...values});
       resetForm();
     }
   };
@@ -40,7 +37,7 @@ const ContactForm = () => {
       validationSchema={validationSchema}
     >
       <FormContainer>
-        <label htmlFor={nameId}>
+        <label>
           Name
           <Field
             type="text"
@@ -51,16 +48,16 @@ const ContactForm = () => {
           />
           <ErrorMessage name="name" />
         </label>
-        <label htmlFor={numberId}>
+        <label>
           Number
           <Field
             type="tel"
-            name="number"
+            name="phone"
             pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
             title="Phone number must be digits and can contain spaces, dashes, parentheses and should start with +"
             required
           />
-          <ErrorMessage name="number" />
+          <ErrorMessage name="phone" />
         </label>
         <button type="submit">Add contact</button>
       </FormContainer>
