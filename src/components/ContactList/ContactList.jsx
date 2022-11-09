@@ -13,7 +13,7 @@ export default function ContactList() {
       {data &&
         data
           .filter(contact =>
-            contact.name.toLowerCase().includes(filter.toLowerCase()) || contact.phone.toString().includes(filter)
+            contact.name.toLowerCase().includes(filter.toLowerCase()) || contact.phone.includes(filter)
           )
           .map(({ name, phone, id }) => (
             <ContactListItem name={name} phone={phone} key={id} id={id} />

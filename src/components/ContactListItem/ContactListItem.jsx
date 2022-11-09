@@ -3,9 +3,11 @@ import { ListItem, ListSpan, ListButton } from './ContactListItem.styled';
 import { useDeleteContactMutation } from 'ContactsApi/contactsApi';
 import { toast } from 'react-toastify';
 import { useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 export default function ContactListItem({ id, name, phone }) {
-  const [deleteContact, { isLoading, isSuccess, isError }] = useDeleteContactMutation();
+  const [deleteContact, { isLoading, isSuccess, isError }] =
+    useDeleteContactMutation();
 
   useEffect(() => {
     if (isSuccess) {
@@ -15,7 +17,7 @@ export default function ContactListItem({ id, name, phone }) {
     if (isError) {
       toast.error(isError.data);
     }
-  }, [isError, isSuccess, name])
+  }, [isError, isSuccess, name]);
 
   return (
     <ListItem key={id}>
@@ -40,3 +42,9 @@ export default function ContactListItem({ id, name, phone }) {
     </ListItem>
   );
 }
+
+ContactListItem.propTypes = {
+  id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  phone: PropTypes.string.isRequired,
+};
