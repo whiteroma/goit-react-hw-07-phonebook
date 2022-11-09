@@ -1,6 +1,10 @@
 import { React } from 'react';
 import { FormContainer } from './ContactForm.styled';
-import { Formik, Field, ErrorMessage } from 'formik';
+import {
+  Formik,
+  Field,
+  ErrorMessage
+} from 'formik';
 import * as Yup from 'yup';
 import {
   useAddContactMutation,
@@ -8,6 +12,7 @@ import {
 } from 'ContactsApi/contactsApi';
 import { Oval } from 'react-loader-spinner';
 import { toast } from 'react-toastify';
+import { useEffect } from 'react';
 
 const initialValues = {
   name: '',
@@ -19,21 +24,31 @@ const validationSchema = Yup.object().shape({
 });
 
 const ContactForm = () => {
-  const [addContact, { isLoading }] = useAddContactMutation();
+  const [addContact, { isLoading, isError, isSuccess }] =
+    useAddContactMutation();
   const { data } = useFetchContactsQuery();
 
-  const handleSubmit = (values, { resetForm }) => {
+  const handleSubmit = async (values, { resetForm }) => {
     const addedName = data
       .map(contact => contact.name.toLowerCase())
       .includes(values.name.toLowerCase());
     if (addedName) {
       return toast.error(`${values.name} is already in a list`);
     } else {
-      addContact({ ...values });
-      toast.success(`${values.name} successfully added`);
+      await addContact({ ...values });
       resetForm();
     }
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success('Contact successfully added');
+    }
+
+    if (isError) {
+      toast.error(isError.data);
+    }
+  }, [isSuccess, isError]);
 
   return (
     <Formik

@@ -5,7 +5,6 @@ import { filterContacts } from 'redux/formSlice';
 const Filter = () => {
   const dispatch = useDispatch();
   const filter = useSelector(state => state.contacts.query);
-  console.log('filter', filter);
 
   return (
     <FilterLabel htmlFor="filter">

@@ -2,18 +2,33 @@ import { Oval } from 'react-loader-spinner';
 import { ListItem, ListSpan, ListButton } from './ContactListItem.styled';
 import { useDeleteContactMutation } from 'ContactsApi/contactsApi';
 import { toast } from 'react-toastify';
+import { useEffect } from 'react';
 
 export default function ContactListItem({ id, name, phone }) {
-  const [deleteContact, { isLoading, isSuccess }] = useDeleteContactMutation();
-  console.log('isSuccess', isSuccess);
+  const [deleteContact, { isLoading, isSuccess, isError }] = useDeleteContactMutation();
 
-  const handleDelete = () => {
-    const contactDelete = deleteContact(id);
-    if (contactDelete) {
+  // const handleDelete = () => {
+  //   const contactDelete = deleteContact(id);
+  //   if (contactDelete) {
+  //     toast.warning(`${name} removed from your contacts`);
+  //   }
+  //   return contactDelete;
+  // };
+
+  const handleDelete = async () => {
+    await deleteContact(id);
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
       toast.warning(`${name} removed from your contacts`);
     }
-    return contactDelete;
-  };
+
+    if (isError) {
+      
+      toast.error(isError.data);
+    }
+  })
 
   return (
     <ListItem key={id}>
